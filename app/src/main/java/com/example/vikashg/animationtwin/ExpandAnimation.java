@@ -19,10 +19,14 @@ class ExpandAnimation extends Animation {
         setDuration(500);
     }
 
+	
+	
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
         final int newHeight = (int) ((finishHeight - startHeight) * interpolatedTime + startHeight);
         view.getLayoutParams().height = newHeight;
+		
+		
         view.requestLayout();
     }
 
