@@ -8,9 +8,11 @@ android {
         applicationId "com.example.vikashg.animationtwin"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 1
+		versionCode System.getenv("BUILD_NUMBER") as Integer ?: 0
         versionName "1.0"
+		project.ext.set("archivesBaseName", "AnimApp-" + versionName + "-" + versionCode);
     }
+	
     buildTypes {
         release {
             minifyEnabled false
