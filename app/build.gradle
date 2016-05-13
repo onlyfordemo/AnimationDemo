@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply from: 'gradle-s3-upload.gradle'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -8,11 +8,14 @@ android {
         applicationId "com.example.vikashg.animationtwin"
         minSdkVersion 21
         targetSdkVersion 23
-		versionCode System.getenv("BUILD_NUMBER") as Integer ?: 0
+        AWS_ACCESS_KEY = System.getenv('AWS_ACCESS_KEY');
+        AWS_SECRET_ACCESS_KEY = System.getenv('AWS_SECRET_ACCESS_KEY');
+        versionCode System.getenv("BUILD_NUMBER") as Integer ?: 0
         versionName "1.0"
-		project.ext.set("archivesBaseName", "AnimApp-" + versionName + "-" + versionCode);
+        AWS_S3_APK_PREFIX = "AnimApp-" + versionName + "-" + versionCode;
+        project.ext.set("archivesBaseName", "AnimApp-" + versionName + "-" + versionCode);
     }
-	
+
     buildTypes {
         release {
             minifyEnabled false

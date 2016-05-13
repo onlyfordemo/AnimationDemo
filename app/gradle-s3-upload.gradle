@@ -1,0 +1,54 @@
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
+import java.security.MessageDigest
+import java.text.SimpleDateFormat
+def publishAllTask = project.tasks.create("publishAllApksToS3")
+android.applicationVariants.all { variant ->
+    def task = project.tasks.create("publish${variant.name}ApkToS3") << {
+        if (!project.hasProperty('AWS_ACCESS_KEY') || !project.hasProperty('AWS_SECRET_ACCESS_KEY')) {
+            throw new GradleException("Please set AWS_S3_KEY_ID and AWS_S3_KEY_SECRET properties.")
+        }
+        def bucket = "packager-000-dev-android.avalonlabs.io"
+        def apkFile = variant.outputs[0].outputFile
+
+        def prefix = project.hasProperty('AWS_S3_APK_PREFIX') ? project.AWS_S3_APK_PREFIX + "-" : ""
+        def targetPath = prefix + variant.name + ".apk"
+        // def contentType = "application/octet-stream"
+        def contentType = "application/vnd.android.package-archive"
+        def keyId = project.AWS_ACCESS_KEY
+        def keySecret = project.AWS_SECRET_ACCESS_KEY
+
+
+        def date = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ").format(new Date())
+        def digest = MessageDigest.getInstance("MD5")
+
+        apkFile.eachByte(4096) { buffer, length ->
+            digest.update(buffer, 0, length)
+        }
+
+
+        def md5 = digest.digest().encodeBase64()
+
+        def publicReadHeader = "x-amz-acl:public-read"
+        def data = "PUT\n$md5\n$contentType\n$date\n$publicReadHeader\n/$bucket/$targetPath"
+        def signingKey = new SecretKeySpec(keySecret.getBytes(), "HmacSHA1");
+        def mac = Mac.getInstance("HmacSHA1");
+        mac.init(signingKey);
+        def sig = mac.doFinal(data.getBytes()).encodeBase64()
+
+        ProcessBuilder pb = new ProcessBuilder([
+                'curl',
+                '-T', apkFile.getAbsolutePath(),
+                '-H', publicReadHeader,
+                '-H', 'Date: ' + date,
+                '-H', 'Authorization: AWS ' + keyId + ':' + sig,
+                '-H', 'Content-Type: ' + contentType,
+                '-H', 'Content-MD5: ' + md5,
+                'http://' + bucket + '.s3.amazonaws.com/' + targetPath
+        ])
+        pb.start().waitFor()
+    }
+
+    task.dependsOn variant.assemble
+    publishAllTask.dependsOn task
+}

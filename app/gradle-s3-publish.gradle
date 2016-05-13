@@ -9,8 +9,8 @@ publishing {
         maven {
             url "http://localhost:8080/job/New_Android_Project_3/lastSuccessfulBuild/artifact/app/build/outputs/apk/"
             credentials {
-                username "admin"
-                password "password"
+                username "demo"
+                password "demo1234"
             }
         }
 
