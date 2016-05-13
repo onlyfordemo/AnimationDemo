@@ -121,7 +121,7 @@ public class MainActivity extends Activity {
     private void resizeWidthWithAnimation(View view, int targetWidth, int duration) {
         Animation anim = new ResizeWidthAnimation(view, targetWidth);
         anim.setDuration(duration);
-        anim.setInterpolator(new AccelerateDecelerateInterpolator());
+        anim.setInterpolator(new CustomInterpolator());
         view.setAnimation(anim);
         view.animate();
     }
