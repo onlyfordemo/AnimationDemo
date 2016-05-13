@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-apply from: 'gradle-s3-upload.gradle'
+apply from:'https://gist.githubusercontent.com/pboos/c4ae04b62641d7e9897c/raw/45515edf3cf00925b59a51d0ca893c44a2b06851/gradle-s3-upload.gradle'
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -8,8 +9,8 @@ android {
         applicationId "com.example.vikashg.animationtwin"
         minSdkVersion 21
         targetSdkVersion 23
-        AWS_ACCESS_KEY = System.getenv('AWS_ACCESS_KEY');
-        AWS_SECRET_ACCESS_KEY = System.getenv('AWS_SECRET_ACCESS_KEY');
+        AWS_S3_KEY_ID = System.getenv('AWS_ACCESS_KEY');
+        AWS_S3_KEY_SECRET = System.getenv('AWS_SECRET_ACCESS_KEY');
         versionCode System.getenv("BUILD_NUMBER") as Integer ?: 0
         versionName "1.0"
         AWS_S3_APK_PREFIX = "AnimApp-" + versionName + "-" + versionCode;
@@ -20,6 +21,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
     }
 }
