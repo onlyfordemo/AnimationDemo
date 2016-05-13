@@ -1,0 +1,34 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+repositories { jcenter() }
+dependencies { compile 'org.slf4j:slf4j-api:1.7.12' }
+
+publishing {
+    repositories {
+        maven {
+            url "http://localhost:8080/job/New_Android_Project_3/lastSuccessfulBuild/artifact/app/build/outputs/apk/"
+            credentials {
+                username "admin"
+                password "password"
+            }
+        }
+
+        maven {
+            url "s3://packager-000-dev-android.avalonlabs.io"
+            credentials(AwsCredentials) {
+                accessKey "${System.getenv('AWS_ACCESS_KEY')}"
+                secretKey "${System.getenv('AWS_SECRET_ACCESS_KEY')}"
+            }
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            groupId 'com.me'
+            artifactId 'sample-project'
+            version "1.1"
+            from components.java
+        }
+    }
+}
