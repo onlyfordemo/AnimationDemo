@@ -9,11 +9,8 @@ android {
         applicationId "com.example.vikashg.animationtwin"
         minSdkVersion 21
         targetSdkVersion 23
-        //AWS_S3_KEY_ID = "AKIAJJYRIOCQUFHJJ5WQ"
-        //AWS_S3_KEY_SECRET = "2TZQtNeMtAEtW586IC8X1spJRBSpT5SQ7+ZyLwKX"
         versionCode System.getenv("BUILD_NUMBER") as Integer ?: 0
         versionName "1.0"
-      //  AWS_S3_APK_PREFIX = "AnimApp-" + versionName + "-" + versionCode;
         project.ext.set("archivesBaseName", "AnimApp-" + versionName + "-" + versionCode);
     }
 
