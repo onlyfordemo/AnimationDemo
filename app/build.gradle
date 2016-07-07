@@ -17,8 +17,21 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            applicationIdSuffix "release"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug{
+            minifyEnabled true
+            applicationIdSuffix "debug"
+        }
+    }
 
+    productFlavors{
+        prod{
+            applicationId "com.example.vikashg.animationtwin.prod"
+        }
+        dev{
+            applicationId "com.example.vikashg.animationtwin.dev"
         }
     }
 }
